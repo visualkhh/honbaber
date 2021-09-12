@@ -39,13 +39,18 @@ export class App implements FrontLifeCycle {
             //     position: naver.maps.Position.CENTER_LEFT
             }
         });
+
         naver.maps.Event.once(map, 'init_stylemap', () => {
             //customControl 객체 이용하기
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
             });
+            const searchBtn = new naver.maps.CustomControl('<button class="btn btn-primary btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>', {
+                position: naver.maps.Position.LEFT_BOTTOM
+            });
 
             customControl.setMap(map);
+            searchBtn.setMap(map);
 
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                 if (navigator.geolocation) {
