@@ -3,7 +3,6 @@ import {Sim} from 'simple-boot-core/decorators/SimDecorator';
 @Sim()
 export class TestService {
     constructor() {
-        console.log('testService Constructor')
     }
 
     public calc(i: number, y: number) {
