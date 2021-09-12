@@ -33,11 +33,11 @@ export class App implements FrontLifeCycle {
             // minZoom: 7, //지도의 최소 줌 레벨
             useStyleMap: true,
             zoomControl: true, //줌 컨트롤의 표시 여부
-            // mapTypeControl: true,
-            // zoomControlOptions: { //줌 컨트롤의 옵션
-            //     style: naver.maps.ZoomControlStyle.SMALL,
+            mapTypeControl: true,
+            zoomControlOptions: { //줌 컨트롤의 옵션
+                style: naver.maps.ZoomControlStyle.SMALL,
             //     position: naver.maps.Position.CENTER_LEFT
-            // }
+            }
         });
         naver.maps.Event.once(map, 'init_stylemap', () => {
             //customControl 객체 이용하기
