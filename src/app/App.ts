@@ -4,10 +4,8 @@ import template from './app.html'
 import css from './app.css'
 import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
 import { ProjectService } from './services/ProjectService';
-// import data from '../../static/assets/JSONAsset/user.json'
-// import jsonUrl from 'url:/src/assets/JSONAsset/user.json'
+import { DomRenderProxy } from 'dom-render/DomRenderProxy';
 declare var naver: any;
-
 @Sim({scheme: 'layout-router'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
@@ -26,33 +24,8 @@ export class App implements FrontLifeCycle {
     }
 
     async onInit() {
-        // console.log('-->', jsonUrl)
-        // import('../../static/assets/JSONAsset/user.json').then(it => {
-        //     console.log('-->',it.default)
-        // })
     }
 
-    // onSuccessGeolocation(position) {
-    //     var location = new naver.maps.LatLng(position.coords.latitude,
-    //         position.coords.longitude);
-    //
-    //     map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-    //     map.setZoom(10); // 지도의 줌 레벨을 변경합니다.
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
-    //
-    //     infowindow.open(map, location);
-    //     console.log('Coordinates: ' + location.toString());
-    // }
-
-    // onErrorGeolocation() {
-    //     var center = map.getCenter();
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' +
-    //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
-    //
-    //     infowindow.open(map, center);
-    // }
     onInitedChild(): void {
     }
 
@@ -60,7 +33,8 @@ export class App implements FrontLifeCycle {
         const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
         console.log(data);
         var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
-        const map = new naver.maps.Map(mapElement, {
+        // DomRen
+        this.map = DomRenderProxy.final(new naver.maps.Map(mapElement, {
             // zoom: 13, //지도의 초기 줌 레벨
             // minZoom: 7, //지도의 최소 줌 레벨
             useStyleMap: true,
@@ -70,9 +44,9 @@ export class App implements FrontLifeCycle {
                 style: naver.maps.ZoomControlStyle.SMALL,
                 //     position: naver.maps.Position.CENTER_LEFT
             }
-        });
-
-        naver.maps.Event.once(map, 'init_stylemap', () => {
+        }));
+        // map.zz = '1'
+        naver.maps.Event.once(this.map, 'init_stylemap', () => {
             //customControl 객체 이용하기
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
@@ -81,26 +55,11 @@ export class App implements FrontLifeCycle {
                 position: naver.maps.Position.LEFT_BOTTOM
             });
 
-            customControl.setMap(map);
-            searchBtn.setMap(map);
+            customControl.setMap(this.map);
+            searchBtn.setMap(this.map);
 
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
-                if (navigator.geolocation) {
-                    /**
-                     * navigator.geolocation 은 Chrome 50 버젼 이후로 HTTP 환경에서 사용이 Deprecate 되어 HTTPS 환경에서만 사용 가능 합니다.
-                     * http://localhost 에서는 사용이 가능하며, 테스트 목적으로, Chrome 의 바로가기를 만들어서 아래와 같이 설정하면 접속은 가능합니다.
-                     * chrome.exe --unsafely-treat-insecure-origin-as-secure="http://example.com"
-                     */
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        var infowindow = new naver.maps.InfoWindow();
-                        var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                        map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-                        map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
-                        infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
-                        infowindow.open(map, location);
-                        // console.log('Coordinates: ' + location.toString());
-                    }, ()=>{});
-                }
+                    navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
                 //map.setCenter(new naver.maps.LatLng(37.3595953, 127.1053971));
             });
 
@@ -115,4 +74,33 @@ export class App implements FrontLifeCycle {
             // });
         });
     }
+
+    moveCurrentPosition(position: GeolocationPosition) {
+        var infowindow = new naver.maps.InfoWindow();
+        var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        this.map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+        this.map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
+        infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
+        infowindow.open(this.map, location);
+    }
+    // onSuccessGeolocation(position) {
+    //     var location = new naver.maps.LatLng(position.coords.latitude,
+    //         position.coords.longitude);
+    //
+    //     map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+    //     map.setZoom(10); // 지도의 줌 레벨을 변경합니다.
+    //
+    //     infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
+    //
+    //     infowindow.open(map, location);
+    //     console.log('Coordinates: ' + location.toString());
+    // }
+    // onErrorGeolocation() {
+    //     var center = map.getCenter();
+    //
+    //     infowindow.setContent('<div style="padding:20px;">' +
+    //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
+    //
+    //     infowindow.open(map, center);
+    // }
 }
