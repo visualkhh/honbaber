@@ -1,7 +1,27 @@
 
+
 <div class="offcanvas offcanvas-bottom popup-search" tabindex="-1" id="offcanvasBottom" data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="offcanvasBottomLabel"  >
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasBottomLabel"  dr-event-click="this.fullPopup = !this.fullPopup; console.log(this.fullPopup)">Offcanvas bottom ${this.fullPopup}</h5>
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel" >Offcanvas bottom ${this.fullPopup}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <button dr-event-click="this.map.setCenter(new naver.maps.LatLng(37.3595953, 127.1053971))">dd</button>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+        <div>dd</div>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-bottom full-popup-search" tabindex="-1"  id="detailCanvas" data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="detailTitle"  >
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="detailTitle" >Offcanvas bottom ${this.fullPopup}</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small">

@@ -5,6 +5,7 @@ import css from './app.css'
 import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
 import { ProjectService } from './services/ProjectService';
 import { DomRenderProxy } from 'dom-render/DomRenderProxy';
+declare var bootstrap: any;
 declare var naver: any;
 @Sim({scheme: 'layout-router'})
 @Component({template, styles: [css]})
@@ -24,6 +25,16 @@ export class App implements FrontLifeCycle {
     }
 
     async onInit() {
+        setTimeout(()=>{
+            var myOffcanvas = document.getElementById('detailCanvas')
+            var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+            bsOffcanvas.show();
+        }, 5000)
+        setTimeout(()=>{
+            var myOffcanvas = document.getElementById('offcanvasBottom')
+            var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
+            bsOffcanvas.show();
+        }, 2000)
     }
 
     onInitedChild(): void {
@@ -54,9 +65,13 @@ export class App implements FrontLifeCycle {
             const searchBtn = new naver.maps.CustomControl('<button class="btn btn-primary btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>', {
                 position: naver.maps.Position.LEFT_BOTTOM
             });
+            const detailBtn = new naver.maps.CustomControl('<button class="btn btn-primary btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#detailCanvas" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>', {
+                position: naver.maps.Position.RIGHT_TOP
+            });
 
             customControl.setMap(this.map);
             searchBtn.setMap(this.map);
+            detailBtn.setMap(this.map);
 
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                     navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});

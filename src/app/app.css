@@ -27,8 +27,8 @@ body {
 }
 
 .full-popup-search {
-    height: 95vh;
-    transition: height 1s ease;
+    height: 100vh;
+    /*transition: height 1s ease;*/
 }
 .normal-popup-search {
     height: 50vh;
