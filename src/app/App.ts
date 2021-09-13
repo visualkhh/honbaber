@@ -29,6 +29,9 @@ export class App implements FrontLifeCycle {
             var myOffcanvas = document.getElementById('detailCanvas')
             var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
             bsOffcanvas.show();
+            setTimeout(() => {
+                bsOffcanvas.hide()
+            }, 2000)
         }, 5000)
         setTimeout(()=>{
             var myOffcanvas = document.getElementById('offcanvasBottom')
