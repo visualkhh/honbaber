@@ -4,7 +4,8 @@ import template from './app.html'
 import css from './app.css'
 import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
 import { ProjectService } from './services/ProjectService';
-
+// import data from '../../static/assets/JSONAsset/user.json'
+// import jsonUrl from 'url:/src/assets/JSONAsset/user.json'
 declare var naver: any;
 
 @Sim({scheme: 'layout-router'})
@@ -25,7 +26,10 @@ export class App implements FrontLifeCycle {
     }
 
     async onInit() {
-
+        // console.log('-->', jsonUrl)
+        // import('../../static/assets/JSONAsset/user.json').then(it => {
+        //     console.log('-->',it.default)
+        // })
     }
 
     // onSuccessGeolocation(position) {
