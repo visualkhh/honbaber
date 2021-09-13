@@ -10,8 +10,8 @@ declare var naver: any;
 @Sim({scheme: 'layout-router'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
-    public map: any;
-
+    public map?: any;
+    public fullPopup = false;
     constructor(public projectService: ProjectService) {
     }
 
@@ -25,10 +25,38 @@ export class App implements FrontLifeCycle {
     }
 
     async onInit() {
+
+    }
+
+    // onSuccessGeolocation(position) {
+    //     var location = new naver.maps.LatLng(position.coords.latitude,
+    //         position.coords.longitude);
+    //
+    //     map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
+    //     map.setZoom(10); // 지도의 줌 레벨을 변경합니다.
+    //
+    //     infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
+    //
+    //     infowindow.open(map, location);
+    //     console.log('Coordinates: ' + location.toString());
+    // }
+
+    // onErrorGeolocation() {
+    //     var center = map.getCenter();
+    //
+    //     infowindow.setContent('<div style="padding:20px;">' +
+    //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
+    //
+    //     infowindow.open(map, center);
+    // }
+    onInitedChild(): void {
+    }
+
+    async onInitMap(mapElement: Element) {
         const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
         console.log(data);
         var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
-        const map = new naver.maps.Map(document.querySelector('#map'), {
+        const map = new naver.maps.Map(mapElement, {
             // zoom: 13, //지도의 초기 줌 레벨
             // minZoom: 7, //지도의 최소 줌 레벨
             useStyleMap: true,
@@ -36,7 +64,7 @@ export class App implements FrontLifeCycle {
             mapTypeControl: true,
             zoomControlOptions: { //줌 컨트롤의 옵션
                 style: naver.maps.ZoomControlStyle.SMALL,
-            //     position: naver.maps.Position.CENTER_LEFT
+                //     position: naver.maps.Position.CENTER_LEFT
             }
         });
 
@@ -82,29 +110,5 @@ export class App implements FrontLifeCycle {
             //     map.setCenter(new naver.maps.LatLng(37.3595953, 127.1553971));
             // });
         });
-    }
-
-    // onSuccessGeolocation(position) {
-    //     var location = new naver.maps.LatLng(position.coords.latitude,
-    //         position.coords.longitude);
-    //
-    //     map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-    //     map.setZoom(10); // 지도의 줌 레벨을 변경합니다.
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
-    //
-    //     infowindow.open(map, location);
-    //     console.log('Coordinates: ' + location.toString());
-    // }
-
-    // onErrorGeolocation() {
-    //     var center = map.getCenter();
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' +
-    //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
-    //
-    //     infowindow.open(map, center);
-    // }
-    onInitedChild(): void {
     }
 }
