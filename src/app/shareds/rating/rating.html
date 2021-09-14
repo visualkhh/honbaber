@@ -1,0 +1,7 @@
+<div>
+    <span dr-for="var i = 1 ; i <= this.max; i++" class="rating-item" dr-it="i">
+        <span dr-event-click="this.value=#it#">
+         ${#it# > this.value ? this.unselected : this.selected}
+        </span>
+    </span>
+</div>

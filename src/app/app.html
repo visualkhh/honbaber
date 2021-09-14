@@ -2,19 +2,48 @@
 
 <div class="offcanvas offcanvas-bottom popup-search" tabindex="-1" id="offcanvasBottom" data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="offcanvasBottomLabel"  >
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasBottomLabel" >Offcanvas bottom ${this.fullPopup}</h5>
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">🍮 주변 검색</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small">
-        <button dr-event-click="this.map.setCenter(new naver.maps.LatLng(37.3595953, 127.1053971))">dd</button>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
+        <form>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">🧭 주변 ${this.radius}m</label>
+                <div class="col-sm-10">
+                    <input type="range" class="form-range" id="customRange1" min="0" max="1000" dr-value="this.radius" dr-event-change="this.setRadius($target.value)">
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col">
+                    <label class="form-label">👀 눈치도</label>
+                    <component component="this.sense"></component>
+                </div>
+                <div class="col">
+                    <label class="form-label">⏱ 시간</label>
+                    <component component="this.time"></component>
+                </div>
+            </div>
+            <br>
+            <div class="row g-3">
+                <div class="col">
+                    <label class="form-label">😋 맛</label>
+                    <component component="this.taste"></component>
+                </div>
+                <div class="col">
+                    <label class="form-label">👍 친절도</label>
+                    <component component="this.service"></component>
+                </div>
+            </div>
+            <hr>
+            <div class="input-group">
+                <input type="email" class="form-control" id="search">
+                <button class="btn btn-outline-secondary" type="button">🔎</button>
+            </div>
+
+        </form>
+
+
     </div>
 </div>
 

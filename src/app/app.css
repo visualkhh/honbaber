@@ -22,7 +22,7 @@ body {
 }
 
 .popup-search {
-    height: 50vh;
+    height: 45vh;
     /*transition: height 1s ease;*/
 }
 
@@ -68,4 +68,15 @@ body {
     height: 20px;
     margin: 7px 0 0 0;
     background-position: -153px -31px
+}
+
+.offcanvas-header {
+    padding-bottom: 0;
+}
+.offcanvas-body {
+    padding-top: 0;
+}
+
+.rating-item {
+    padding: 0 1vh;
 }
