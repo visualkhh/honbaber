@@ -6,8 +6,25 @@ import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
 import { ProjectService } from './services/ProjectService';
 import { DomRenderProxy } from 'dom-render/DomRenderProxy';
 import { Rating } from './shareds/rating/Rating';
+import { AlertService } from './services/AlertService';
+import { ApiService } from './services/ApiService';
 declare var bootstrap: any;
 declare var naver: any;
+export type Store = {
+    ADDR1: string; // "서울 영등포구 당산로 180"
+    ADDR2: string; // "신우빌딩 1층 12호"
+    IMG: string; // "https://lh3.googleusercontent.com/IY46sYeT68JA7Zrq7En8FgQdwh4cQ5buQgWc4wDIZdSvIXW2uHea6d1JdaUPJs_JadHe"
+    LAT: number; // 37.5303057771
+    LNG: number; // 126.8992801172
+    NAME: string; // "우미노미"
+    POST: string; // "07216"
+    RADIUS: number; // 0
+    TEL: string; // "070-4367-7116"
+    TOTAL_RATE: number; // 3
+    TOTAL_RATE_CNT: number; // 3
+    _marker: any;
+    _infoWIndow: any;
+}
 @Sim({scheme: 'layout-router'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
@@ -20,7 +37,8 @@ export class App implements FrontLifeCycle {
     public taste = new Rating();
     public service = new Rating();
     public time = new Rating();
-    constructor(public projectService: ProjectService) {
+    public results: Store[] = [];
+    constructor(public projectService: ProjectService, public apiService: ApiService) {
 
     }
 
@@ -33,9 +51,10 @@ export class App implements FrontLifeCycle {
     onFinish(): void {
     }
 
-    async onInit() {
+    onInit() {
+        // let progressModal = this.alertService.openProgressModal();
         // setTimeout(()=>{
-        //     this.time.value = 3
+        //     //this.time.value = 3
         // }, 5000);
         // setTimeout(()=>{
         //     var myOffcanvas = document.getElementById('detailCanvas')
@@ -133,25 +152,53 @@ export class App implements FrontLifeCycle {
         this.currentCircle.setCenter(position);
         this.currentCircle.setVisible(true);
         // console.log(position, this.radius)
-        const data = await fetch(`http://localhost:8080/api/v1/store?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`)
-            .then(function(response) {
-                return response.json();
-            });
-        (data ?? []).forEach((it: any) => {
-            const contentString = `
-                <div class="iw_inner">
-                   <h3>${it.NAME}</h3>
-                   <p>${it.ADDR1} | ${it.ADDR2} | (${it.POST})<br/>
-                       <img src="${it.IMG}" width="55" height="55" class="thumb" /><br />
-                       ${it.TEL}<br />
-                       // <a href="http://www.seoul.go.kr" target="_blank">www.seoul.go.kr/</a>
-                   </p>
-                </div>
-                `;
 
-            var infowindow = new naver.maps.InfoWindow({
-                content: contentString
+        const data = await this.apiService.get(`http://localhost:8080/api/v1/store?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`);
+        this.results.filter(it => it._marker).forEach(it => {
+            if (it._marker.getMap()) {
+                it._marker.setMap(null);
+            }
+            it._infoWIndow.close();
+        });
+        this.results.length = 0;
+        <Store[]>(data ?? []).forEach((it: Store) => {
+            const marker = new naver.maps.Marker({
+                map: this.map,
+                position: new naver.maps.LatLng(it.LAT, it.LNG),
+                title: '??',
+                icon: {
+                    url: '/assets/images/ico_pin.jpg',
+                    size: new naver.maps.Size(25, 34),
+                    scaledSize: new naver.maps.Size(25, 34),
+                    origin: new naver.maps.Point(0, 0),
+                    anchor: new naver.maps.Point(12, 34)
+                },
+                zIndex: 100
             });
+            const infoWindow = new naver.maps.InfoWindow({
+                content: `<div style="width:150px;text-align:center;padding:10px;"><b>${it.NAME}</b></div>`
+            });
+            it._marker = DomRenderProxy.final(marker);
+            it._infoWIndow = DomRenderProxy.final(infoWindow);
+            naver.maps.Event.addListener(it._marker, 'click', () => {
+                it._infoWIndow.open(this.map, it._marker)
+
+            });
+            this.results.push(it)
+            // const contentString = `
+            //     <div class="iw_inner">
+            //        <h3>${it.NAME}</h3>
+            //        <p>${it.ADDR1} | ${it.ADDR2} | (${it.POST})<br/>
+            //            <img src="${it.IMG}" width="55" height="55" class="thumb" /><br />
+            //            ${it.TEL}<br />
+            //            // <a href="http://www.seoul.go.kr" target="_blank">www.seoul.go.kr/</a>
+            //        </p>
+            //     </div>
+            //     `;
+            //
+            // var infowindow = new naver.maps.InfoWindow({
+            //     content: contentString
+            // });
         })
         console.log('-->', data)
 
@@ -194,5 +241,11 @@ export class App implements FrontLifeCycle {
     //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
     //
     //     infowindow.open(map, center);
+    // }
+    // public openInfoWindow(it: Store) {
+    //     return (e: any) => {
+    //         it._infoWIndow.open(this.map, it._marker)
+    //     }
+    //     console.log('--click???????->', it)
     // }
 }

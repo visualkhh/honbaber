@@ -24,6 +24,7 @@ body {
 .popup-search {
     height: 45vh;
     /*transition: height 1s ease;*/
+    /*transition: background-color 1s ease;*/
 }
 
 .full-popup-search {
