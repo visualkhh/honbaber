@@ -6,7 +6,7 @@ import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
 import { ProjectService } from './services/ProjectService';
 import { DomRenderProxy } from 'dom-render/DomRenderProxy';
 import { Rating } from './shareds/rating/Rating';
-import { AlertService } from './services/AlertService';
+import { AlertService } from './services/alert/AlertService';
 import { ApiService } from './services/ApiService';
 declare var bootstrap: any;
 declare var naver: any;
@@ -38,7 +38,7 @@ export class App implements FrontLifeCycle {
     public service = new Rating();
     public time = new Rating();
     public results: Store[] = [];
-    constructor(public projectService: ProjectService, public apiService: ApiService) {
+    constructor(public projectService: ProjectService, public apiService: ApiService, public alertService: AlertService) {
 
     }
 
@@ -52,6 +52,23 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
+        let alert = this.alertService.showPrimary('aa');
+        alert.open();
+
+        setTimeout(()=>{
+            alert = this.alertService.showSuccess('a3a');
+            alert.open();
+        }, 1000)
+
+        setTimeout(()=>{
+        alert = this.alertService.showWarning('aa2');
+        alert.open();
+        }, 2000)
+
+        setTimeout(()=>{
+        alert = this.alertService.showDanger('addda');
+        alert.open();
+        }, 3000)
         // let progressModal = this.alertService.openProgressModal();
         // setTimeout(()=>{
         //     //this.time.value = 3
@@ -122,7 +139,7 @@ export class App implements FrontLifeCycle {
 
             customControl.setMap(this.map);
             searchBtn.setMap(this.map);
-            detailBtn.setMap(this.map);
+            // detailBtn.setMap(this.map);
 
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                     navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
@@ -153,7 +170,7 @@ export class App implements FrontLifeCycle {
         this.currentCircle.setVisible(true);
         // console.log(position, this.radius)
 
-        const data = await this.apiService.get(`http://localhost:8080/api/v1/store?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`);
+        const data = await this.apiService.get(`/store?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`, '주변');
         this.results.filter(it => it._marker).forEach(it => {
             if (it._marker.getMap()) {
                 it._marker.setMap(null);
