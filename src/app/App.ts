@@ -11,6 +11,7 @@ import { ApiService } from './services/ApiService';
 declare var bootstrap: any;
 declare var naver: any;
 export type Store = {
+    ID: number;
     ADDR1: string; // "서울 영등포구 당산로 180"
     ADDR2: string; // "신우빌딩 1층 12호"
     IMG: string; // "https://lh3.googleusercontent.com/IY46sYeT68JA7Zrq7En8FgQdwh4cQ5buQgWc4wDIZdSvIXW2uHea6d1JdaUPJs_JadHe"
@@ -33,10 +34,10 @@ export class App implements FrontLifeCycle {
     public radius = 100;
     public map?: any;
     public fullPopup = false;
-    public sense = new Rating();
-    public taste = new Rating();
-    public service = new Rating();
-    public time = new Rating();
+    public sense = new Rating('👀 :');
+    public taste = new Rating('😋 :');
+    public service = new Rating('👍 :');
+    public time = new Rating('⏱ :');
     public results: Store[] = [];
     constructor(public projectService: ProjectService, public apiService: ApiService, public alertService: AlertService) {
 
@@ -52,23 +53,23 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
-        let alert = this.alertService.showPrimary('aa');
-        alert.open();
-
-        setTimeout(()=>{
-            alert = this.alertService.showSuccess('a3a');
-            alert.open();
-        }, 1000)
-
-        setTimeout(()=>{
-        alert = this.alertService.showWarning('aa2');
-        alert.open();
-        }, 2000)
-
-        setTimeout(()=>{
-        alert = this.alertService.showDanger('addda');
-        alert.open();
-        }, 3000)
+        // let alert = this.alertService.showPrimary('aa');
+        // alert.open();
+        //
+        // setTimeout(()=>{
+        //     alert = this.alertService.showSuccess('a3a');
+        //     alert.open();
+        // }, 1000)
+        //
+        // setTimeout(()=>{
+        // alert = this.alertService.showWarning('aa2');
+        // alert.open();
+        // }, 2000)
+        //
+        // setTimeout(()=>{
+        // alert = this.alertService.showDanger('addda');
+        // alert.open();
+        // }, 3000)
         // let progressModal = this.alertService.openProgressModal();
         // setTimeout(()=>{
         //     //this.time.value = 3
@@ -138,7 +139,7 @@ export class App implements FrontLifeCycle {
             });
 
             customControl.setMap(this.map);
-            searchBtn.setMap(this.map);
+            // searchBtn.setMap(this.map);
             // detailBtn.setMap(this.map);
 
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
@@ -170,7 +171,7 @@ export class App implements FrontLifeCycle {
         this.currentCircle.setVisible(true);
         // console.log(position, this.radius)
 
-        const data = await this.apiService.get(`/store?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`, '주변');
+        const data = await this.apiService.get(`/stores?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`, '주변');
         this.results.filter(it => it._marker).forEach(it => {
             if (it._marker.getMap()) {
                 it._marker.setMap(null);
@@ -193,14 +194,22 @@ export class App implements FrontLifeCycle {
                 zIndex: 100
             });
             const infoWindow = new naver.maps.InfoWindow({
-                content: `<div style="width:150px;text-align:center;padding:10px;"><b>${it.NAME}</b></div>`
+                content: `<img style="display: none" onload="var a = document.querySelector('#info-window-${it.ID}')?.parentElement?.parentElement?.parentElement; if(a) {a.classList.add('info-window') }" id="info-window-${it.ID}" src="data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw=="><div style="width:150px; text-align:center;padding:10px;"><b>${it.NAME}</b> <button onclick="alert(this)">aaa</button></div>`,
+                // backgroundColor: '#00000000',
+                // borderColor: '#00000000',
+                anchorSkew: true
             });
             it._marker = DomRenderProxy.final(marker);
             it._infoWIndow = DomRenderProxy.final(infoWindow);
             naver.maps.Event.addListener(it._marker, 'click', () => {
                 it._infoWIndow.open(this.map, it._marker)
-
             });
+            // naver.maps.Event.addListener(it._infoWIndow, 'click', () => {
+            //     alert(1)
+            // });
+            // naver.maps.Event.addListener(this.map, 'click', () => {
+            //     alert(1)
+            // });
             this.results.push(it)
             // const contentString = `
             //     <div class="iw_inner">

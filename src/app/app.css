@@ -81,3 +81,19 @@ body {
 .rating-item {
     padding: 0 1vh;
 }
+
+.info-window {
+    border-radius: 1rem;
+}
+.controller-container {
+    position: fixed;
+    padding: 5px 10px;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    /*background-color: red;*/
+    background-color: rgba(101, 101, 101, 0.56);
+    width: 100vw;
+    /*height: 20vh;*/
+    bottom: 0vh;
+    z-index: 9999;
+}

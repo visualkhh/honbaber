@@ -6,6 +6,6 @@ import css from './rating.css'
 export class Rating {
     public value = 0;
     public max = 5;
-    constructor(public selected = '🌕', public unselected = '🌑') {
+    constructor(public title = '', public selected = '🌕', public unselected = '🌑') {
     }
 }
