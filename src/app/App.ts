@@ -39,7 +39,6 @@ export type Store = {
 export class App implements FrontLifeCycle {
 
     public radius = 100;
-    public map?: any;
     public fullPopup = false;
     public sense = new Rating('👀 :');
     public taste = new Rating('😋 :');
@@ -49,6 +48,7 @@ export class App implements FrontLifeCycle {
     public currentStore?: Store;
     public currentStoreMenu?: Menu;
     public shieldDatas: {
+        map?: any;
         currentMarker?: any,
         currentCircle?: any,
         bsOffcanvas?: {show: () => void, hide: () => void}
@@ -67,6 +67,10 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
+        // let alertDanger = this.alertService.showDanger('dadadadada');
+        // alertDanger.open()
+        // this.alertService.showPrimary('dadadadada').open()
+        // this.alertService.showWarning('dadadadada').open()
     }
 
     onInitedChild(): void {
@@ -76,7 +80,7 @@ export class App implements FrontLifeCycle {
         const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
         var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         // DomRen
-        this.map = DomRenderProxy.final(new naver.maps.Map(mapElement, {
+        this.shieldDatas.map = new naver.maps.Map(mapElement, {
             // zoom: 13, //지도의 초기 줌 레벨
             // minZoom: 7, //지도의 최소 줌 레벨
             useStyleMap: true,
@@ -86,11 +90,11 @@ export class App implements FrontLifeCycle {
                 style: naver.maps.ZoomControlStyle.SMALL,
                 //     position: naver.maps.Position.CENTER_LEFT
             }
-        }));
+        });
 
-        this.shieldDatas.currentMarker = new naver.maps.Marker({map: this.map, position: this.map.getCenter(), visible: true});
+        this.shieldDatas.currentMarker = new naver.maps.Marker({map: this.shieldDatas.map, position: this.shieldDatas.map.getCenter(), visible: true});
         this.shieldDatas.currentCircle = new naver.maps.Circle({
-            map: this.map,
+            map: this.shieldDatas.map,
             radius: this.radius,
             center: this.shieldDatas.currentMarker.getPosition(),
             strokeColor: '#5347AA',
@@ -101,8 +105,8 @@ export class App implements FrontLifeCycle {
             fillOpacity: 0.2
         });
         this.clickMap({coord: this.shieldDatas.currentMarker.getPosition()})
-        naver.maps.Event.addListener(this.map, 'click', this.clickMap.bind(this));
-        naver.maps.Event.once(this.map, 'init_stylemap', () => {
+        naver.maps.Event.addListener(this.shieldDatas.map, 'click', this.clickMap.bind(this));
+        naver.maps.Event.once(this.shieldDatas.map, 'init_stylemap', () => {
             //customControl 객체 이용하기
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
@@ -114,7 +118,7 @@ export class App implements FrontLifeCycle {
                 position: naver.maps.Position.RIGHT_TOP
             });
 
-            customControl.setMap(this.map);
+            customControl.setMap(this.shieldDatas.map);
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                     navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
             });
@@ -141,7 +145,7 @@ export class App implements FrontLifeCycle {
         this.results.length = 0;
         <Store[]>(data ?? []).forEach((it: Store) => {
             const marker = new naver.maps.Marker({
-                map: this.map,
+                map: this.shieldDatas.map,
                 position: new naver.maps.LatLng(it.LAT, it.LNG),
                 title: '',
                 icon: {
@@ -163,7 +167,7 @@ export class App implements FrontLifeCycle {
             it._marker = DomRenderProxy.final(marker);
             it._infoWIndow = DomRenderProxy.final(infoWindow);
             naver.maps.Event.addListener(it._marker, 'click', () => {
-                it._infoWIndow.open(this.map, it._marker)
+                it._infoWIndow.open(this.shieldDatas.map, it._marker)
             });
             this.results.push(it)
         })
@@ -171,7 +175,7 @@ export class App implements FrontLifeCycle {
 
     moveCurrentPosition(position: GeolocationPosition) {
         var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        this.map.setCenter(location);
+        this.shieldDatas.map.setCenter(location);
         this.clickMap({coord: location})
     }
 
