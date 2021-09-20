@@ -1,18 +1,12 @@
-<div class="offcanvas offcanvas-bottom full-popup-search" tabindex="-1"  id="detailCanvas" data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="detailTitle"  >
+<div dr-on-init="onInitDetaileCanvas" class="offcanvas offcanvas-bottom full-popup-search" tabindex="-1"  data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="detailTitle"  >
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="detailTitle" >Offcanvas bottom ${this.fullPopup}</h5>
+        <h5 class="offcanvas-title" id="detailTitle" >${this.currentStore?.NAME}</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body small">
-        <button dr-event-click="this.map.setCenter(new naver.maps.LatLng(37.3595953, 127.1053971))">dd</button>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
-        <div>dd</div>
+    <div class="offcanvas-body small" dr-if="this.currentStoreMenu">
+        <div dr-for="var i = 0; i < this.currentStoreMenu.length; i++" dr-it="i">
+            ${this.currentStoreMenu[#it#].MENU} - ${this.currentStoreMenu[#it#].PRICE}
+        </div>
     </div>
 </div>
 <from class="controller-container">
@@ -33,9 +27,9 @@
         </div>
     </div>
     <div class="row">
-        <label class="col-sm-2 col-form-label">🧭 ${this.radius}m</label>
-        <div class="col-sm-10">
-            <input type="range" class="form-control form-range-input" min="0" max="1000" dr-value="this.radius" dr-event-change="this.setRadius($target.value)">
+        <label class="col-3 col-form-label">🧭 ${this.radius}m</label>
+        <div class="col-9">
+            <input type="range" class="form-range" min="0" max="1000" dr-value="this.radius" dr-event-change="this.setRadius($target.value)">
         </div>
     </div>
 </from>

@@ -3,6 +3,7 @@ import { Component } from 'simple-boot-front/decorators/Component';
 import template from './app.html'
 import css from './app.css'
 import { FrontLifeCycle } from 'simple-boot-front/module/FrontLifeCycle';
+import { Intent } from 'simple-boot-core/intent/Intent';
 import { ProjectService } from './services/ProjectService';
 import { DomRenderProxy } from 'dom-render/DomRenderProxy';
 import { Rating } from './shareds/rating/Rating';
@@ -10,6 +11,13 @@ import { AlertService } from './services/alert/AlertService';
 import { ApiService } from './services/ApiService';
 declare var bootstrap: any;
 declare var naver: any;
+export type Menu = {
+    ID: number; // 2
+    IS_SIGNATURE: number; // 1
+    MENU: string; // "스키야키정식"
+    PRICE:  number; //15000
+
+}
 export type Store = {
     ID: number;
     ADDR1: string; // "서울 영등포구 당산로 180"
@@ -26,11 +34,10 @@ export type Store = {
     _marker: any;
     _infoWIndow: any;
 }
-@Sim({scheme: 'layout-router'})
+@Sim({scheme: 'index'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
-    public currentMarker?: any;
-    public currentCircle?: any;
+
     public radius = 100;
     public map?: any;
     public fullPopup = false;
@@ -39,6 +46,13 @@ export class App implements FrontLifeCycle {
     public service = new Rating('👍 :');
     public time = new Rating('⏱ :');
     public results: Store[] = [];
+    public currentStore?: Store;
+    public currentStoreMenu?: Menu;
+    public shieldDatas: {
+        currentMarker?: any,
+        currentCircle?: any,
+        bsOffcanvas?: {show: () => void, hide: () => void}
+    } = DomRenderProxy.final({});
     constructor(public projectService: ProjectService, public apiService: ApiService, public alertService: AlertService) {
 
     }
@@ -95,7 +109,7 @@ export class App implements FrontLifeCycle {
     async onInitMap(mapElement: Element) {
         const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
 
-        console.log(data);
+        //console.log(data);
         var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         // DomRen
         this.map = DomRenderProxy.final(new naver.maps.Map(mapElement, {
@@ -110,19 +124,19 @@ export class App implements FrontLifeCycle {
             }
         }));
 
-        this.currentMarker = DomRenderProxy.final(new naver.maps.Marker({map: this.map, position: this.map.getCenter(), visible: true}));
-        this.currentCircle = DomRenderProxy.final(new naver.maps.Circle({
+        this.shieldDatas.currentMarker = new naver.maps.Marker({map: this.map, position: this.map.getCenter(), visible: true});
+        this.shieldDatas.currentCircle = new naver.maps.Circle({
             map: this.map,
             radius: this.radius,
-            center: this.currentMarker.getPosition(),
+            center: this.shieldDatas.currentMarker.getPosition(),
             strokeColor: '#5347AA',
             strokeOpacity: 0.5,
             strokeWeight: 2,
             fillColor: '#1a7fe5',
             visible: true,
             fillOpacity: 0.2
-        }));
-        this.clickMap({coord: this.currentMarker.getPosition()})
+        });
+        this.clickMap({coord: this.shieldDatas.currentMarker.getPosition()})
         // this.currentMarker.onRemove();
         // map.zz = '1'
         naver.maps.Event.addListener(this.map, 'click', this.clickMap.bind(this));
@@ -160,15 +174,15 @@ export class App implements FrontLifeCycle {
     }
 
     clickMap(e: any) {
-        this.currentMarker.setPosition(e.coord);
+        this.shieldDatas.currentMarker.setPosition(e.coord);
         this.setRadius(this.radius)
     }
 
     async setRadius(value: number) {
-        let position = this.currentMarker.getPosition();
-        this.currentCircle.setRadius(this.radius = value);
-        this.currentCircle.setCenter(position);
-        this.currentCircle.setVisible(true);
+        let position = this.shieldDatas.currentMarker.getPosition();
+        this.shieldDatas.currentCircle.setRadius(this.radius = value);
+        this.shieldDatas.currentCircle.setCenter(position);
+        this.shieldDatas.currentCircle.setVisible(true);
         // console.log(position, this.radius)
 
         const data = await this.apiService.get(`/stores?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`, '주변');
@@ -194,7 +208,10 @@ export class App implements FrontLifeCycle {
                 zIndex: 100
             });
             const infoWindow = new naver.maps.InfoWindow({
-                content: `<img style="display: none" onload="var a = document.querySelector('#info-window-${it.ID}')?.parentElement?.parentElement?.parentElement; if(a) {a.classList.add('info-window') }" id="info-window-${it.ID}" src="data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw=="><div style="width:150px; text-align:center;padding:10px;"><b>${it.NAME}</b> <button onclick="alert(this)">aaa</button></div>`,
+                content: `<img style="display: none" onload="var a = document.querySelector('#info-window-${it.ID}')?.parentElement?.parentElement?.parentElement; if(a) {a.classList.add('info-window') }" id="info-window-${it.ID}" src="data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==">
+                            <div style="width:150px; text-align:center;padding:10px;">
+                                <b>${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
+                            </div>`,
                 // backgroundColor: '#00000000',
                 // borderColor: '#00000000',
                 anchorSkew: true
@@ -226,7 +243,7 @@ export class App implements FrontLifeCycle {
             //     content: contentString
             // });
         })
-        console.log('-->', data)
+        // console.log('-->', data)
 
     }
 
@@ -239,14 +256,20 @@ export class App implements FrontLifeCycle {
         // infowindow.open(this.map, location);
         this.map.setCenter(location);
         this.clickMap({coord: location})
-
-
-
         // naver.maps.Event.addListener(this.map, 'click', (e: any) => {
         //     marker.setPosition(e.coord);
         // });
+    }
 
+    public onInitDetaileCanvas(e: Element){
+        this.shieldDatas.bsOffcanvas = new bootstrap.Offcanvas(e)
+    }
 
+    public async showStore(i: Intent) {
+        this.currentStore = await this.apiService.get(`/store/${i.data.id}`, '가게 정보');
+        this.currentStoreMenu = await this.apiService.get(`/store/${i.data.id}/menu`, '메뉴 정보');
+        console.log('-->menu', this.currentStoreMenu)
+        this.shieldDatas.bsOffcanvas?.show();
     }
     // onSuccessGeolocation(position) {
     //     var location = new naver.maps.LatLng(position.coords.latitude,
