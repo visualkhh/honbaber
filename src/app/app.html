@@ -4,9 +4,14 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small" dr-if="this.currentStoreMenu">
-        <div dr-for="var i = 0; i < this.currentStoreMenu.length; i++" dr-it="i">
-            ${this.currentStoreMenu[#it#].MENU} - ${this.currentStoreMenu[#it#].PRICE}
+        <form>
+        <div class="row" dr-for-of="this.currentStoreMenu">
+            <div class="col-6">${#it#.MENU}</div>
+            <div class="col-6">
+                 ${#it#.PRICE}
+            </div>
         </div>
+        </form>
     </div>
 </div>
 <from class="controller-container">

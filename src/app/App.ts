@@ -53,8 +53,8 @@ export class App implements FrontLifeCycle {
         currentCircle?: any,
         bsOffcanvas?: {show: () => void, hide: () => void}
     } = DomRenderProxy.final({});
-    constructor(public projectService: ProjectService, public apiService: ApiService, public alertService: AlertService) {
 
+    constructor(public projectService: ProjectService, public apiService: ApiService, public alertService: AlertService) {
     }
 
     onCreate(): void {
@@ -67,40 +67,6 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
-        // let alert = this.alertService.showPrimary('aa');
-        // alert.open();
-        //
-        // setTimeout(()=>{
-        //     alert = this.alertService.showSuccess('a3a');
-        //     alert.open();
-        // }, 1000)
-        //
-        // setTimeout(()=>{
-        // alert = this.alertService.showWarning('aa2');
-        // alert.open();
-        // }, 2000)
-        //
-        // setTimeout(()=>{
-        // alert = this.alertService.showDanger('addda');
-        // alert.open();
-        // }, 3000)
-        // let progressModal = this.alertService.openProgressModal();
-        // setTimeout(()=>{
-        //     //this.time.value = 3
-        // }, 5000);
-        // setTimeout(()=>{
-        //     var myOffcanvas = document.getElementById('detailCanvas')
-        //     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
-        //     bsOffcanvas.show();
-        //     setTimeout(() => {
-        //         bsOffcanvas.hide()
-        //     }, 2000)
-        // }, 5000)
-        // setTimeout(()=>{
-        //     var myOffcanvas = document.getElementById('offcanvasBottom')
-        //     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas)
-        //     bsOffcanvas.show();
-        // }, 2000)
     }
 
     onInitedChild(): void {
@@ -108,8 +74,6 @@ export class App implements FrontLifeCycle {
 
     async onInitMap(mapElement: Element) {
         const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
-
-        //console.log(data);
         var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         // DomRen
         this.map = DomRenderProxy.final(new naver.maps.Map(mapElement, {
@@ -137,8 +101,6 @@ export class App implements FrontLifeCycle {
             fillOpacity: 0.2
         });
         this.clickMap({coord: this.shieldDatas.currentMarker.getPosition()})
-        // this.currentMarker.onRemove();
-        // map.zz = '1'
         naver.maps.Event.addListener(this.map, 'click', this.clickMap.bind(this));
         naver.maps.Event.once(this.map, 'init_stylemap', () => {
             //customControl 객체 이용하기
@@ -153,23 +115,9 @@ export class App implements FrontLifeCycle {
             });
 
             customControl.setMap(this.map);
-            // searchBtn.setMap(this.map);
-            // detailBtn.setMap(this.map);
-
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                     navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
-                //map.setCenter(new naver.maps.LatLng(37.3595953, 127.1053971));
             });
-
-            //Map 객체의 controls 활용하기
-            // var $locationBtn = $(locationBtnHtml),
-            //     locationBtnEl = $locationBtn[0];
-            //
-            // map.controls[naver.maps.Position.LEFT_CENTER].push(locationBtnEl);
-            //
-            // var domEventListener = naver.maps.Event.addDOMListener(locationBtnEl, 'click', function() {
-            //     map.setCenter(new naver.maps.LatLng(37.3595953, 127.1553971));
-            // });
         });
     }
 
@@ -183,8 +131,6 @@ export class App implements FrontLifeCycle {
         this.shieldDatas.currentCircle.setRadius(this.radius = value);
         this.shieldDatas.currentCircle.setCenter(position);
         this.shieldDatas.currentCircle.setVisible(true);
-        // console.log(position, this.radius)
-
         const data = await this.apiService.get(`/stores?lat=${position.y}&lng=${position.x}&radius=${this.radius / 1000}&rate=3`, '주변');
         this.results.filter(it => it._marker).forEach(it => {
             if (it._marker.getMap()) {
@@ -197,7 +143,7 @@ export class App implements FrontLifeCycle {
             const marker = new naver.maps.Marker({
                 map: this.map,
                 position: new naver.maps.LatLng(it.LAT, it.LNG),
-                title: '??',
+                title: '',
                 icon: {
                     url: '/assets/images/ico_pin.jpg',
                     size: new naver.maps.Size(25, 34),
@@ -212,8 +158,6 @@ export class App implements FrontLifeCycle {
                             <div style="width:150px; text-align:center;padding:10px;">
                                 <b>${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
                             </div>`,
-                // backgroundColor: '#00000000',
-                // borderColor: '#00000000',
                 anchorSkew: true
             });
             it._marker = DomRenderProxy.final(marker);
@@ -221,44 +165,14 @@ export class App implements FrontLifeCycle {
             naver.maps.Event.addListener(it._marker, 'click', () => {
                 it._infoWIndow.open(this.map, it._marker)
             });
-            // naver.maps.Event.addListener(it._infoWIndow, 'click', () => {
-            //     alert(1)
-            // });
-            // naver.maps.Event.addListener(this.map, 'click', () => {
-            //     alert(1)
-            // });
             this.results.push(it)
-            // const contentString = `
-            //     <div class="iw_inner">
-            //        <h3>${it.NAME}</h3>
-            //        <p>${it.ADDR1} | ${it.ADDR2} | (${it.POST})<br/>
-            //            <img src="${it.IMG}" width="55" height="55" class="thumb" /><br />
-            //            ${it.TEL}<br />
-            //            // <a href="http://www.seoul.go.kr" target="_blank">www.seoul.go.kr/</a>
-            //        </p>
-            //     </div>
-            //     `;
-            //
-            // var infowindow = new naver.maps.InfoWindow({
-            //     content: contentString
-            // });
         })
-        // console.log('-->', data)
-
     }
 
     moveCurrentPosition(position: GeolocationPosition) {
-        // var infowindow = new naver.maps.InfoWindow();
         var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        // this.map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-        // this.map.setZoom(18); // 지도의 줌 레벨을 변경합니다.
-        // infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
-        // infowindow.open(this.map, location);
         this.map.setCenter(location);
         this.clickMap({coord: location})
-        // naver.maps.Event.addListener(this.map, 'click', (e: any) => {
-        //     marker.setPosition(e.coord);
-        // });
     }
 
     public onInitDetaileCanvas(e: Element){
@@ -268,33 +182,6 @@ export class App implements FrontLifeCycle {
     public async showStore(i: Intent) {
         this.currentStore = await this.apiService.get(`/store/${i.data.id}`, '가게 정보');
         this.currentStoreMenu = await this.apiService.get(`/store/${i.data.id}/menu`, '메뉴 정보');
-        console.log('-->menu', this.currentStoreMenu)
         this.shieldDatas.bsOffcanvas?.show();
     }
-    // onSuccessGeolocation(position) {
-    //     var location = new naver.maps.LatLng(position.coords.latitude,
-    //         position.coords.longitude);
-    //
-    //     map.setCenter(location); // 얻은 좌표를 지도의 중심으로 설정합니다.
-    //     map.setZoom(10); // 지도의 줌 레벨을 변경합니다.
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' + 'geolocation.getCurrentPosition() 위치' + '</div>');
-    //
-    //     infowindow.open(map, location);
-    //     console.log('Coordinates: ' + location.toString());
-    // }
-    // onErrorGeolocation() {
-    //     var center = map.getCenter();
-    //
-    //     infowindow.setContent('<div style="padding:20px;">' +
-    //         '<h5 style="margin-bottom:5px;color:#f00;">Geolocation failed!</h5>'+ "latitude: "+ center.lat() +"<br />longitude: "+ center.lng() +'</div>');
-    //
-    //     infowindow.open(map, center);
-    // }
-    // public openInfoWindow(it: Store) {
-    //     return (e: any) => {
-    //         it._infoWIndow.open(this.map, it._marker)
-    //     }
-    //     console.log('--click???????->', it)
-    // }
 }
