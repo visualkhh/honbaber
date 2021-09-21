@@ -184,8 +184,8 @@ export class App implements FrontLifeCycle {
     }
 
     public async showStore(i: Intent) {
-        this.currentStore = await this.apiService.get(`/store/${i.data.id}`, '가게 정보');
-        this.currentStoreMenu = await this.apiService.get(`/store/${i.data.id}/menu`, '메뉴 정보');
+        this.currentStore = await this.apiService.get(`/stores/${i.data.id}`, '가게 정보');
+        this.currentStoreMenu = await this.apiService.get(`/stores/${i.data.id}/menus`, '메뉴 정보');
         this.shieldDatas.bsOffcanvas?.show();
     }
 }
