@@ -88,10 +88,6 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
-        // let alertDanger = this.alertService.showDanger('dadadadada');
-        // alertDanger.open()
-        // this.alertService.showPrimary('dadadadada').open()
-        // this.alertService.showWarning('dadadadada').open()
     }
 
     onInitedChild(): void {
@@ -132,13 +128,6 @@ export class App implements FrontLifeCycle {
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
             });
-            const searchBtn = new naver.maps.CustomControl('<button class="btn btn-light btn-outline-dark btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">🍮 주변 검색</button>', {
-                position: naver.maps.Position.LEFT_BOTTOM
-            });
-            const detailBtn = new naver.maps.CustomControl('<button class="btn btn-primary btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#detailCanvas" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>', {
-                position: naver.maps.Position.RIGHT_TOP
-            });
-
             customControl.setMap(this.shieldDatas.map);
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                 navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
