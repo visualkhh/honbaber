@@ -160,7 +160,7 @@ export class App implements FrontLifeCycle {
             const infoWindow = new naver.maps.InfoWindow({
                 content: `<img style="display: none" onload="var a = document.querySelector('#info-window-${it.ID}')?.parentElement?.parentElement?.parentElement; if(a) {a.classList.add('info-window') }" id="info-window-${it.ID}" src="data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==">
                             <div style="width:150px; text-align:center;padding:10px;">
-                                <b>${it.ICON}${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
+                                <b>${it.ICON}&nbsp;&nbsp;${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
                             </div>`,
                 anchorSkew: true
             });
