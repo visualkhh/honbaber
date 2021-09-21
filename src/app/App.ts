@@ -67,18 +67,14 @@ export class App implements FrontLifeCycle {
     }
 
     onInit() {
-        // let alertDanger = this.alertService.showDanger('dadadadada');
-        // alertDanger.open()
-        // this.alertService.showPrimary('dadadadada').open()
-        // this.alertService.showWarning('dadadadada').open()
     }
 
     onInitedChild(): void {
     }
 
     async onInitMap(mapElement: Element) {
-        const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
-        var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
+        await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
+        const locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         // DomRen
         this.shieldDatas.map = new naver.maps.Map(mapElement, {
             // zoom: 13, //지도의 초기 줌 레벨
@@ -111,13 +107,6 @@ export class App implements FrontLifeCycle {
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
             });
-            const searchBtn = new naver.maps.CustomControl('<button class="btn btn-light btn-outline-dark btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">🍮 주변 검색</button>', {
-                position: naver.maps.Position.LEFT_BOTTOM
-            });
-            const detailBtn = new naver.maps.CustomControl('<button class="btn btn-primary btn-search" type="button" data-bs-toggle="offcanvas" data-bs-target="#detailCanvas" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>', {
-                position: naver.maps.Position.RIGHT_TOP
-            });
-
             customControl.setMap(this.shieldDatas.map);
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
                 navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
