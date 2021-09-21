@@ -15,7 +15,7 @@ export type Menu = {
     ID: number; // 2
     IS_SIGNATURE: number; // 1
     MENU: string; // "스키야키정식"
-    PRICE:  number; //15000
+    PRICE: number; // 15,000
 
 }
 export type Store = {
@@ -25,6 +25,7 @@ export type Store = {
     IMG: string; // "https://lh3.googleusercontent.com/IY46sYeT68JA7Zrq7En8FgQdwh4cQ5buQgWc4wDIZdSvIXW2uHea6d1JdaUPJs_JadHe"
     LAT: number; // 37.5303057771
     LNG: number; // 126.8992801172
+    ICON: string; // icon encoding by utf-8
     NAME: string; // "우미노미"
     POST: string; // "07216"
     RADIUS: number; // 0
@@ -37,7 +38,6 @@ export type Store = {
 @Sim({scheme: 'index'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
-
     public radius = 100;
     public fullPopup = false;
     public sense = new Rating('👀 :');
@@ -84,9 +84,9 @@ export class App implements FrontLifeCycle {
             // zoom: 13, //지도의 초기 줌 레벨
             // minZoom: 7, //지도의 최소 줌 레벨
             useStyleMap: true,
-            zoomControl: true, //줌 컨트롤의 표시 여부
+            zoomControl: true, // 줌 컨트롤의 표시 여부
             mapTypeControl: true,
-            zoomControlOptions: { //줌 컨트롤의 옵션
+            zoomControlOptions: { // 줌 컨트롤의 옵션
                 style: naver.maps.ZoomControlStyle.SMALL,
                 //     position: naver.maps.Position.CENTER_LEFT
             }
@@ -120,7 +120,7 @@ export class App implements FrontLifeCycle {
 
             customControl.setMap(this.shieldDatas.map);
             const domEventListener = naver.maps.Event.addDOMListener(customControl.getElement(), 'click', () => {
-                    navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
+                navigator.geolocation?.getCurrentPosition(this.moveCurrentPosition.bind(this), ()=>{});
             });
         });
     }
@@ -160,7 +160,7 @@ export class App implements FrontLifeCycle {
             const infoWindow = new naver.maps.InfoWindow({
                 content: `<img style="display: none" onload="var a = document.querySelector('#info-window-${it.ID}')?.parentElement?.parentElement?.parentElement; if(a) {a.classList.add('info-window') }" id="info-window-${it.ID}" src="data:image/gif;base64,R0lGODlhCwALAIAAAAAA3pn/ZiH5BAEAAAEALAAAAAALAAsAAAIUhA+hkcuO4lmNVindo7qyrIXiGBYAOw==">
                             <div style="width:150px; text-align:center;padding:10px;">
-                                <b>${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
+                                <b>${it.ICON}${it.NAME}</b> <button onclick="const data = new CustomEvent('intent', {detail: {uri: 'index://showStore', data: {id: ${it.ID}}}}); window.dispatchEvent(data);">📃자세히..</button>
                             </div>`,
                 anchorSkew: true
             });
@@ -179,7 +179,7 @@ export class App implements FrontLifeCycle {
         this.clickMap({coord: location})
     }
 
-    public onInitDetaileCanvas(e: Element){
+    public onInitDetaileCanvas(e: Element) {
         this.shieldDatas.bsOffcanvas = new bootstrap.Offcanvas(e)
     }
 
