@@ -35,6 +35,26 @@ export type Store = {
     _marker: any;
     _infoWIndow: any;
 }
+export type StoreDetail = {
+    ADDR1: string;
+    ADDR2: string;
+    IMG: string;
+    IS_SELF_PAYMENT: number;
+    IS_SELF_SIDE_DISH: number;
+    IS_SELF_WATER: number;
+    NAME: string;
+    OFF_DAY: string;
+    OPEN_AT: string;
+    OPEN_DAY: string;
+    PERSONAL_TABLE_CNT: number;
+    POST: string;
+    SENSE_RATE: number;
+    TASTE_RATE: number;
+    TEL: string;
+    TIME_RATE: number;
+    TOTAL_RATE: number;
+    WEBSITE: string;
+}
 @Sim({scheme: 'index'})
 @Component({template, styles: [css]})
 export class App implements FrontLifeCycle {
@@ -47,6 +67,7 @@ export class App implements FrontLifeCycle {
     public results: Store[] = [];
     public currentStore?: Store;
     public currentStoreMenu?: Menu;
+    public currentStoreDetail?: StoreDetail;
     public shieldDatas: {
         map?: any;
         currentMarker?: any,
@@ -186,6 +207,7 @@ export class App implements FrontLifeCycle {
     public async showStore(i: Intent) {
         this.currentStore = await this.apiService.get(`/stores/${i.data.id}`, '가게 정보');
         this.currentStoreMenu = await this.apiService.get(`/stores/${i.data.id}/menus`, '메뉴 정보');
+        this.currentStoreDetail = await this.apiService.get(`/stores/${i.data.id}/detail`, '상세 정보');
         this.shieldDatas.bsOffcanvas?.show();
     }
 }

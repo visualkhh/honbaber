@@ -13,6 +13,16 @@
         </div>
         </form>
     </div>
+    <div class="offcanvas-body small" dr-if="this.currentStoreDetail">
+        <div class="row">
+            <div class="col-12 overflow-scroll">
+                <p>셀프 항목 (이 부분은 아이콘을 만들어서 채우면 좋을 듯)</p>
+                ${this.currentStoreDetail?.IS_SELF_PAYMENT}&nbsp;/&nbsp;
+                ${this.currentStoreDetail?.IS_SELF_SIDE_DISH}&nbsp;/&nbsp;
+                ${this.currentStoreDetail?.IS_SELF_WATER}&nbsp;/&nbsp; 
+            </div>
+        </div>
+    </div>
 </div>
 <from class="controller-container">
     <div class="row mb-2">

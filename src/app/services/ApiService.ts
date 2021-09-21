@@ -7,7 +7,7 @@ export class ApiService {
     constructor(private alertService: AlertService) {
     }
 
-    public get(url: string, title= '') {
+    public get(url: string, title = '') {
         const p = this.alertService.showProgress(title);
         p.open();
         return fetch(environment.apiHostUrl + url).then((response) => response.json()).catch(it => p.close()).finally(() => p.close());
