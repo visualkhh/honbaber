@@ -9,8 +9,8 @@ import { DomRenderProxy } from 'dom-render/DomRenderProxy';
 import { Rating } from './shareds/rating/Rating';
 import { AlertService } from './services/alert/AlertService';
 import { ApiService } from './services/ApiService';
-declare var bootstrap: any;
-declare var naver: any;
+declare const bootstrap: any;
+declare const naver: any;
 export type Menu = {
     ID: number; // 2
     IS_SIGNATURE: number; // 1
@@ -77,8 +77,8 @@ export class App implements FrontLifeCycle {
     }
 
     async onInitMap(mapElement: Element) {
-        const data = await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
-        var locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
+        await this.projectService.loadScript('https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=83bfuniegk&amp;submodules=panorama,geocoder,drawing,visualization')
+        const locationBtnHtml = '<a href="#" class="btn_mylct"><span class="spr_trff spr_ico_mylct">NAVER 그린팩토리</span></a>';
         // DomRen
         this.shieldDatas.map = new naver.maps.Map(mapElement, {
             // zoom: 13, //지도의 초기 줌 레벨
@@ -107,7 +107,7 @@ export class App implements FrontLifeCycle {
         this.clickMap({coord: this.shieldDatas.currentMarker.getPosition()})
         naver.maps.Event.addListener(this.shieldDatas.map, 'click', this.clickMap.bind(this));
         naver.maps.Event.once(this.shieldDatas.map, 'init_stylemap', () => {
-            //customControl 객체 이용하기
+            // customControl 객체 이용하기
             const customControl = new naver.maps.CustomControl(locationBtnHtml, {
                 position: naver.maps.Position.TOP_LEFT
             });
@@ -131,7 +131,7 @@ export class App implements FrontLifeCycle {
     }
 
     async setRadius(value: number) {
-        let position = this.shieldDatas.currentMarker.getPosition();
+        const position = this.shieldDatas.currentMarker.getPosition();
         this.shieldDatas.currentCircle.setRadius(this.radius = value);
         this.shieldDatas.currentCircle.setCenter(position);
         this.shieldDatas.currentCircle.setVisible(true);
@@ -174,7 +174,7 @@ export class App implements FrontLifeCycle {
     }
 
     moveCurrentPosition(position: GeolocationPosition) {
-        var location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        const location = new naver.maps.LatLng(position.coords.latitude, position.coords.longitude);
         this.shieldDatas.map.setCenter(location);
         this.clickMap({coord: location})
     }
