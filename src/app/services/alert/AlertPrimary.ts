@@ -3,12 +3,12 @@ import { Alert } from './Alert';
 
 
 export class AlertPrimary extends Alert {
-    constructor(public msg: string, alertService: AlertService) {
+    constructor(public msg: string, alertService: AlertService, public closeTime = 200) {
         super(alertService);
     }
 
     getAfterCloseTime(): number {
-        return 2000;
+        return this.closeTime;
     }
 
     getContainerClass(): string {

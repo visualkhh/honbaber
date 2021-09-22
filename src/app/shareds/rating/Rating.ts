@@ -4,7 +4,7 @@ import css from './rating.css'
 
 @Component({template, styles: [css]})
 export class Rating {
-    public value = 0;
+    public value = 1;
     public max = 5;
     constructor(public title = '', public selected = '🌕', public unselected = '🌑') {
     }
