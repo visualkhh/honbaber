@@ -3,7 +3,7 @@ import { Alert } from './Alert';
 
 
 export class AlertWarning extends Alert {
-    constructor(public msg: string, alertService: AlertService, public closeTime = 200) {
+    constructor(public msg: string, alertService: AlertService, public closeTime = 400) {
         super(alertService);
     }
 

@@ -10,7 +10,10 @@ export class ApiService {
     public get(url: string, title = '') {
         const p = this.alertService.showProgress(title);
         p.open();
-        return fetch(environment.apiHostUrl + url).then((response) => response.json()).catch(it => p.close()).finally(() => p.close());
+        return fetch(environment.apiHostUrl + url).then((response) => response.json()).catch(it => {
+            p.close();
+            this.alertService.showDanger(`${title} 가져오지 못하였습니다.`);
+        }).finally(() => p.close());
     }
 
     public post(url: string, data: any) {

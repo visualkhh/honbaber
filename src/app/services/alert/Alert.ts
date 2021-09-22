@@ -9,7 +9,7 @@ export abstract class Alert {
         this.item.classList.add(this.itemClassName, this.getContainerClass(), 'd-flex', 'align-items-center', 'bg-opacity-25', 'p-2'); //  'alert' 'bg-transparent',
     }
 
-    public open() {
+    public open(): Alert {
         this.item.innerHTML = '';
         this.item.append(this.getContainerContent());
         this.alertContainer = this.alertService.getAlertContainer();
@@ -25,6 +25,7 @@ export abstract class Alert {
                 }
             }, this.getAfterCloseTime());
         }
+        return this;
     }
 
     public close() {

@@ -36,6 +36,7 @@ export class AlertProgress extends Alert {
                 this.close();
             }
         }, 200);
+        return this;
     }
 
     close() {

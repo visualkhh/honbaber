@@ -12,23 +12,23 @@ export class AlertService {
     }
 
     public showProgress(msg: string) {
-        return new AlertProgress(msg, this);
+        return new AlertProgress(msg, this).open();
     }
 
     public showPrimary(msg: string) {
-        return new AlertPrimary(msg, this);
+        return new AlertPrimary(msg, this).open();
     }
 
     public showSuccess(msg: string) {
-        return new AlertSuccess(msg, this);
+        return new AlertSuccess(msg, this).open();
     }
 
     public showWarning(msg: string) {
-        return new AlertWarning(msg, this);
+        return new AlertWarning(msg, this).open();
     }
 
     public showDanger(msg: string) {
-        return new AlertDanger(msg, this);
+        return new AlertDanger(msg, this).open();
     }
 
     public getAlertContainer() {
